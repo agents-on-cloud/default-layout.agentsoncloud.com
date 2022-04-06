@@ -1,6 +1,13 @@
 import colors from 'vuetify/es5/util/colors'
+import { proxy as proxy1 } from '../performance.agentsoncloud.com/module'
 
 export default {
+  server: {
+    port: 3001, // default: 3000
+  },
+  ssr: false,
+  target: 'server',
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - app',
@@ -40,11 +47,33 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '../performance.agentsoncloud.com/module',
+    '../storybook-nuxt/module',
+    '@nuxtjs/axios'
   ],
+
+  axios: {
+    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
+    proxy: true,
+  },
+  publicRuntimeConfig: {
+    axios: {
+      browserBaseURL: process.env.BROWSER_BASE_URL
+    }
+  },
+
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BASE_URL
+    }
+  },
+  proxy: { ...proxy1 },
+
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    treeShake: false,
     theme: {
       dark: true,
       themes: {
